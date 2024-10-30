@@ -167,5 +167,5 @@ KAFKA_OPTS="-Djava.security.auth.login.config=./config/server_jaas.conf" bin/kaf
 ```
 ![Изображение](./images/image_hw2_16.png)
 ### Основные операции
-kafka-acls.sh - работа с ACL
-keytool — инструмент Java для управления сертификатами
+* kafka-acls.sh - работа с ACL
+* keytool — инструмент Java для управления сертификатами
