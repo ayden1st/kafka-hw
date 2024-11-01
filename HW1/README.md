@@ -48,7 +48,7 @@ bin/kafka-server-stop.sh
 bin/zookeeper-server-stop.sh
 ```
 ![Изображение](./images/image_hw1_8.png)
-### Запуск в контенере
+### Запуск в контейнере
 
 Запуск контейнеров 
 ```
