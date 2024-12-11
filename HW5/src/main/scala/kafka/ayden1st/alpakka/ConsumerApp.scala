@@ -3,16 +3,16 @@ package kafka.ayden1st.alpakka
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.kafka.scaladsl.Consumer
-import akka.stream.{ActorMaterializer, ClosedShape}
-import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, RunnableGraph, Sink, Source, ZipN}
-import com.typesafe.config.{Config, ConfigFactory}
 import akka.kafka.{ConsumerSettings, Subscriptions}
-import org.apache.kafka.common.serialization.StringDeserializer
+import akka.stream.scaladsl.{Broadcast, Flow, GraphDSL, RunnableGraph, Sink, ZipWith}
+import akka.stream.{ActorMaterializer, ClosedShape, FlowShape, Graph, KillSwitches, UniqueKillSwitch}
 import ch.qos.logback.classic.{Level, Logger}
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.slf4j.LoggerFactory
-
 import scala.concurrent.ExecutionContextExecutor
+import scala.language.postfixOps
 
 object ConsumerApp {
   LoggerFactory
@@ -44,14 +44,14 @@ object ConsumerApp {
       val output = builder.add(Sink.foreach(println))
 
       val broadcast = builder.add(Broadcast[Int](3))
-      val zip3broadcast = ZipN[Int](3)
-      val zip = builder.add(zip3broadcast)
+//      val zip = builder.add(ZipWith[Int, Int, Int, Vector[Int]](Vector(_, _, _)))
+      val zip = builder.add(ZipWith[Int, Int, Int, Int](List(_, _, _).sum))
 
       input ~> value ~> broadcast.in
 
-      broadcast.out(0) ~> mod1 ~> zip.in(0)
-      broadcast.out(1) ~> mod2 ~> zip.in(1)
-      broadcast.out(2) ~> mod3 ~> zip.in(2)
+      broadcast.out(0) ~> mod1 ~> zip.in0
+      broadcast.out(1) ~> mod2 ~> zip.in1
+      broadcast.out(2) ~> mod3 ~> zip.in2
 
       zip.out ~> output
 
@@ -60,5 +60,7 @@ object ConsumerApp {
 
   def main(args: Array[String]) : Unit ={
     RunnableGraph.fromGraph(graph).run()
+    Thread.sleep(5000)
+    system.terminate()
   }
 }
