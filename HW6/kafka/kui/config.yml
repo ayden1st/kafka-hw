@@ -1,0 +1,16 @@
+auth:
+  type: DISABLED
+kafka:
+  clusters:
+  - bootstrapServers: kafka1:9191,kafka2:9192,kafka3:9193
+    kafkaConnect:
+    - address: http://connect:8083
+      name: connect
+    ksqldbServer: http://ksqldb-server:8088
+    name: Kafka
+    properties: {}
+    readOnly: false
+    schemaRegistry: http://schema:8081
+rbac:
+  roles: []
+webclient: {}
